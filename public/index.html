@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Telegram Web Store Starter</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Telegram web store MVP</p>
+          <h1>Bot ichidagi birinchi do'koningiz</h1>
+          <p class="hero-copy">
+            Bu sahifa Telegram Web App ichida ham, oddiy brauzerda ham ishlaydi.
+            Hozircha mahsulot tanlash, savat va buyurtma yuborish qismi tayyor.
+          </p>
+        </div>
+        <div class="hero-card">
+          <p class="hero-label">MVP ichida bor</p>
+          <ul>
+            <li>Mahsulotlar katalogi</li>
+            <li>Savat hisob-kitobi</li>
+            <li>Buyurtma formasi</li>
+            <li>Local serverga yuborish</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Mahsulotlar</p>
+            <h2>Katalog</h2>
+          </div>
+          <div class="badge" id="cart-count">Savat: 0 ta</div>
+        </div>
+        <div class="grid" id="product-list"></div>
+      </section>
+
+      <section class="checkout">
+        <div class="cart-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Savat</p>
+              <h2>Tanlangan mahsulotlar</h2>
+            </div>
+          </div>
+          <div id="cart-items" class="cart-items">
+            <p class="empty-state">Hozircha savatda mahsulot yo'q.</p>
+          </div>
+          <div class="cart-total">
+            <span>Jami:</span>
+            <strong id="cart-total">0 so'm</strong>
+          </div>
+        </div>
+
+        <form class="order-form" id="order-form">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Buyurtma</p>
+              <h2>Ma'lumotlaringizni kiriting</h2>
+            </div>
+          </div>
+
+          <label>
+            Ism familiya
+            <input type="text" name="fullName" placeholder="Ali Valiyev" required />
+          </label>
+
+          <label>
+            Telefon
+            <input type="tel" name="phone" placeholder="+998 90 123 45 67" required />
+          </label>
+
+          <label>
+            Manzil
+            <textarea name="address" rows="3" placeholder="Toshkent shahri..." required></textarea>
+          </label>
+
+          <label>
+            Izoh
+            <textarea name="note" rows="3" placeholder="Masalan: 19:00 dan keyin olib keling"></textarea>
+          </label>
+
+          <button type="submit" class="primary-btn">Buyurtma yuborish</button>
+          <p class="form-message" id="form-message"></p>
+        </form>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

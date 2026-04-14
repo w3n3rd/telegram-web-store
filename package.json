@@ -1,0 +1,17 @@
+{
+  "name": "telegram-web-store-starter",
+  "version": "1.0.0",
+  "description": "Simple Telegram web store starter without external dependencies.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "bot": "node bot.js"
+  },
+  "keywords": [
+    "telegram",
+    "webapp",
+    "store",
+    "starter"
+  ],
+  "license": "MIT"
+}
