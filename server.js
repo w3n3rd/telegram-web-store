@@ -1,11 +1,16 @@
 const http = require("http");
-const fs = require("fs");
 const path = require("path");
+const {
+  buildOrder,
+  validatePayload,
+  saveOrderLocally,
+  sendTelegramOrder
+} = require("./lib/order-utils");
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, "public");
-const DATA_DIR = path.join(__dirname, "data");
-const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
+const BOT_TOKEN = process.env.BOT_TOKEN || "";
+const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || "";
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -18,16 +23,6 @@ const MIME_TYPES = {
   ".svg": "image/svg+xml",
   ".ico": "image/x-icon"
 };
-
-function ensureDataFile() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
-
-  if (!fs.existsSync(ORDERS_FILE)) {
-    fs.writeFileSync(ORDERS_FILE, "[]", "utf8");
-  }
-}
 
 function sendJson(response, statusCode, payload) {
   response.writeHead(statusCode, {
@@ -49,15 +44,8 @@ function readBody(request) {
   });
 }
 
-function saveOrder(order) {
-  ensureDataFile();
-  const raw = fs.readFileSync(ORDERS_FILE, "utf8");
-  const orders = JSON.parse(raw);
-  orders.push(order);
-  fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2), "utf8");
-}
-
 function serveFile(filePath, response) {
+  const fs = require("fs");
   fs.readFile(filePath, (error, content) => {
     if (error) {
       response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
@@ -73,23 +61,6 @@ function serveFile(filePath, response) {
   });
 }
 
-function buildOrder(payload) {
-  const now = new Date();
-
-  return {
-    id: `ORD-${now.getTime()}`,
-    createdAt: now.toISOString(),
-    customer: {
-      fullName: payload.fullName,
-      phone: payload.phone,
-      address: payload.address,
-      note: payload.note || ""
-    },
-    items: payload.items,
-    total: payload.total
-  };
-}
-
 const server = http.createServer(async (request, response) => {
   const requestUrl = new URL(request.url, `http://${request.headers.host}`);
 
@@ -98,24 +69,19 @@ const server = http.createServer(async (request, response) => {
       const body = await readBody(request);
       const payload = JSON.parse(body || "{}");
 
-      if (!payload.fullName || !payload.phone || !payload.address) {
-        sendJson(response, 400, {
-          ok: false,
-          message: "Ism, telefon va manzil majburiy."
-        });
-        return;
-      }
+      const validationError = validatePayload(payload);
 
-      if (!Array.isArray(payload.items) || payload.items.length === 0) {
+      if (validationError) {
         sendJson(response, 400, {
           ok: false,
-          message: "Kamida bitta mahsulot tanlang."
+          message: validationError
         });
         return;
       }
 
       const order = buildOrder(payload);
-      saveOrder(order);
+      saveOrderLocally(order);
+      await sendTelegramOrder(order, BOT_TOKEN, ADMIN_CHAT_ID);
 
       sendJson(response, 201, {
         ok: true,
@@ -143,8 +109,6 @@ const server = http.createServer(async (request, response) => {
 
   serveFile(filePath, response);
 });
-
-ensureDataFile();
 
 server.listen(PORT, () => {
   console.log(`Server ishga tushdi: http://localhost:${PORT}`);

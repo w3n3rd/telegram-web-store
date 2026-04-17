@@ -82,6 +82,23 @@ npm run bot
 Telegram Web App `localhost` bilan Telegram ichida ochilmaydi.
 Telegram ichida ishlashi uchun sizga `https` bilan ochiladigan public URL kerak bo'ladi.
 
+## Vercel deploy haqida
+
+Vercel uchun loyiha moslashtirilgan:
+
+- frontend `public/` ichidan servis qilinadi
+- buyurtma API `api/order.js` orqali ishlaydi
+- production muhitda buyurtma lokal faylga emas, Telegram chatga yuboriladi
+
+Shuning uchun Vercel'da quyidagilarni environment variable sifatida kiriting:
+
+```text
+BOT_TOKEN=sizning_bot_tokeningiz
+ADMIN_CHAT_ID=sizning_admin_chat_id
+```
+
+`WEB_APP_URL` deploy bo'lgandan keyin chiqadigan `https://...vercel.app` manzil bo'ladi. Uni keyin `.env` ichida va Vercel settings ichida yangilaysiz.
+
 Masalan keyinroq:
 
 - VPS hosting
