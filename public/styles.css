@@ -19,7 +19,7 @@ body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(18, 115, 105, 0.34), transparent 28%),
+    radial-gradient(circle at top left, rgba(31, 115, 18, 0.34), transparent 28%),
     radial-gradient(circle at bottom right, rgba(16, 64, 59, 0.18), transparent 34%),
     linear-gradient(180deg, #d9dedd 0%, var(--bg) 100%);
   color: var(--ink);
