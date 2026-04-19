@@ -4,6 +4,14 @@ const products = [
     name: "Premium Choy Set",
     price: 89000,
     category: "Uy uchun",
+    image: "/images/products/choy-set.jpg",
+    images: [
+      "/images/products/choy-set.jpg",
+      "/images/products/choy-set-2.jpg",
+      "/images/products/choy-set-3.jpg"
+    ],
+    details:
+      "Sovga uchun ham, kundalik foydalanish uchun ham mos. Yengil, chiroyli va dasturxon ko'rinishini boyitadi.",
     description: "Sovga va kundalik foydalanish uchun chiroyli choy set."
   },
   {
@@ -11,6 +19,14 @@ const products = [
     name: "Mini Aroma Diffuser",
     price: 149000,
     category: "Aksessuar",
+    image: "/images/products/aroma-diffuser.jpg",
+    images: [
+      "/images/products/aroma-diffuser.jpg",
+      "/images/products/aroma-diffuser-2.jpg",
+      "/images/products/aroma-diffuser-3.jpg"
+    ],
+    details:
+      "Uy, ofis yoki sovg'a uchun mos. Xonaga yoqimli hid tarqatadi va sokin muhit yaratishga yordam beradi.",
     description: "Xonaga yoqimli hid va sokin atmosfera beradigan qurilma."
   },
   {
@@ -18,6 +34,14 @@ const products = [
     name: "Eco Notebook",
     price: 39000,
     category: "Ofis",
+    image: "/images/products/eco-notebook.jpg",
+    images: [
+      "/images/products/eco-notebook.jpg",
+      "/images/products/eco-notebook-2.jpg",
+      "/images/products/eco-notebook-3.jpg"
+    ],
+    details:
+      "Reja, eslatma va kundalik yozuvlar uchun qulay. Ixcham hajmda, sumkada olib yurishga mos.",
     description: "Ish va reja yozish uchun ixcham va saranjom daftar."
   }
 ];
@@ -30,6 +54,16 @@ const cartCount = document.getElementById("cart-count");
 const cartTotal = document.getElementById("cart-total");
 const orderForm = document.getElementById("order-form");
 const formMessage = document.getElementById("form-message");
+const productModal = document.getElementById("product-modal");
+const modalMainImage = document.getElementById("modal-main-image");
+const modalThumbs = document.getElementById("modal-thumbs");
+const modalCategory = document.getElementById("modal-category");
+const modalTitle = document.getElementById("modal-title");
+const modalDescription = document.getElementById("modal-description");
+const modalPrice = document.getElementById("modal-price");
+const modalAddToCart = document.getElementById("modal-add-to-cart");
+
+let selectedProductId = null;
 
 function formatPrice(value) {
   return `${value.toLocaleString("uz-UZ")} so'm`;
@@ -39,8 +73,9 @@ function renderProducts() {
   productList.innerHTML = products
     .map(
       (product) => `
-        <article class="product-card">
+        <article class="product-card" data-open-product-id="${product.id}" tabindex="0" role="button" aria-label="${product.name} haqida batafsil">
           <div class="product-visual">
+            <img src="${product.image}" alt="${product.name}" loading="lazy" />
             <span class="product-tag">${product.category}</span>
           </div>
           <div class="product-body">
@@ -48,7 +83,7 @@ function renderProducts() {
             <p>${product.description}</p>
             <div class="product-footer">
               <span class="price">${formatPrice(product.price)}</span>
-              <button class="secondary-btn" data-product-id="${product.id}">
+              <button class="secondary-btn" data-product-id="${product.id}" type="button">
                 Savatga qo'shish
               </button>
             </div>
@@ -59,11 +94,81 @@ function renderProducts() {
     .join("");
 
   productList.querySelectorAll("[data-product-id]").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
       const productId = Number(button.getAttribute("data-product-id"));
       addToCart(productId);
     });
   });
+
+  productList.querySelectorAll("[data-open-product-id]").forEach((card) => {
+    card.addEventListener("click", () => {
+      const productId = Number(card.getAttribute("data-open-product-id"));
+      openProductModal(productId);
+    });
+
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        const productId = Number(card.getAttribute("data-open-product-id"));
+        openProductModal(productId);
+      }
+    });
+  });
+}
+
+function getProductImages(product) {
+  return product.images && product.images.length > 0 ? product.images : [product.image];
+}
+
+function setModalImage(image, productName) {
+  modalMainImage.src = image;
+  modalMainImage.alt = productName;
+}
+
+function openProductModal(productId) {
+  const product = products.find((item) => item.id === productId);
+
+  if (!product) {
+    return;
+  }
+
+  selectedProductId = productId;
+  const images = getProductImages(product);
+
+  setModalImage(images[0], product.name);
+  modalCategory.textContent = product.category;
+  modalTitle.textContent = product.name;
+  modalDescription.textContent = product.details || product.description;
+  modalPrice.textContent = formatPrice(product.price);
+  modalThumbs.innerHTML = images
+    .map(
+      (image, index) => `
+        <button class="modal-thumb ${index === 0 ? "is-active" : ""}" type="button" data-modal-image="${image}">
+          <img src="${image}" alt="${product.name} rasmi ${index + 1}" />
+        </button>
+      `
+    )
+    .join("");
+
+  modalThumbs.querySelectorAll("[data-modal-image]").forEach((button) => {
+    button.addEventListener("click", () => {
+      setModalImage(button.getAttribute("data-modal-image"), product.name);
+      modalThumbs.querySelectorAll(".modal-thumb").forEach((thumb) => thumb.classList.remove("is-active"));
+      button.classList.add("is-active");
+    });
+  });
+
+  productModal.classList.add("is-open");
+  productModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeProductModal() {
+  productModal.classList.remove("is-open");
+  productModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+  selectedProductId = null;
 }
 
 function addToCart(productId) {
@@ -180,6 +285,22 @@ async function submitOrder(event) {
 }
 
 orderForm.addEventListener("submit", submitOrder);
+modalAddToCart.addEventListener("click", () => {
+  if (selectedProductId) {
+    addToCart(selectedProductId);
+    closeProductModal();
+  }
+});
+
+productModal.querySelectorAll("[data-modal-close]").forEach((element) => {
+  element.addEventListener("click", closeProductModal);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && productModal.classList.contains("is-open")) {
+    closeProductModal();
+  }
+});
 
 renderProducts();
 renderCart();
