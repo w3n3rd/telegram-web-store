@@ -27,6 +27,8 @@ Rasmiy hujjatlar:
 
 - `lib/payme.js` - Payme checkout URL yaratish helperi
 - `.env.example` - Payme credential nomlari qo'shildi
+- `database/supabase.sql` - Supabase jadvallari uchun SQL
+- `lib/supabase.js` - server tomondan buyurtmani Supabase'ga yozish
 
 ## Keyingi majburiy qadam
 
@@ -57,10 +59,11 @@ PAYME_CHECKOUT_URL=https://checkout.test.paycom.uz
 
 ## Tavsiya qilingan ketma-ketlik
 
-1. Supabase database qo'shish
-2. `orders` va `payme_transactions` jadvallarini yaratish
-3. Buyurtmani avval `pending_payment` status bilan saqlash
-4. Checkout URL yaratish
-5. `/api/payme` Merchant API endpoint qo'shish
-6. Payme sandbox testlaridan o'tkazish
-7. Production credentiallarni Vercel env'ga qo'shish
+1. Supabase project ochish
+2. `database/supabase.sql` ichidagi SQL'ni Supabase SQL Editor'da ishga tushirish
+3. Vercel environment variables'ga `SUPABASE_URL` va `SUPABASE_SERVICE_ROLE_KEY` qo'shish
+4. Buyurtmani avval `pending_payment` status bilan saqlash
+5. Checkout URL yaratish
+6. `/api/payme` Merchant API endpoint qo'shish
+7. Payme sandbox testlaridan o'tkazish
+8. Production credentiallarni Vercel env'ga qo'shish

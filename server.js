@@ -3,7 +3,7 @@ const path = require("path");
 const {
   buildOrder,
   validatePayload,
-  saveOrderLocally,
+  saveOrder,
   sendTelegramOrder
 } = require("./lib/order-utils");
 
@@ -80,7 +80,7 @@ const server = http.createServer(async (request, response) => {
       }
 
       const order = buildOrder(payload);
-      saveOrderLocally(order);
+      await saveOrder(order);
       await sendTelegramOrder(order, BOT_TOKEN, ADMIN_CHAT_ID);
 
       sendJson(response, 201, {

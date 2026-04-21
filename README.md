@@ -108,6 +108,22 @@ Payme uchun boshlang'ich helper va yo'riqnoma qo'shildi:
 
 To'liq Payme ulashdan oldin database qo'shish kerak. Payme transactionlarni doimiy saqlashni talab qiladi, Vercel'dagi vaqtinchalik fayl saqlash bunga mos emas.
 
+## Supabase database
+
+Supabase uchun boshlang'ich fayllar qo'shildi:
+
+- `database/supabase.sql` - `orders` va `payme_transactions` jadvallari
+- `lib/supabase.js` - serverdan Supabase REST API orqali yozish
+
+Vercel environment variables'ga keyin quyidagilar qo'shiladi:
+
+```text
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+```
+
+`SUPABASE_SERVICE_ROLE_KEY` faqat server tomonda ishlatiladi. Uni hech qachon frontend kodga yozmang.
+
 Masalan keyinroq:
 
 - VPS hosting

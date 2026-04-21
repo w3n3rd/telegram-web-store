@@ -1,6 +1,7 @@
 const {
   buildOrder,
   validatePayload,
+  saveOrder,
   sendTelegramOrder
 } = require("../lib/order-utils");
 
@@ -29,6 +30,7 @@ module.exports = async (request, response) => {
     const botToken = process.env.BOT_TOKEN || "";
     const adminChatId = process.env.ADMIN_CHAT_ID || "";
 
+    await saveOrder(order);
     await sendTelegramOrder(order, botToken, adminChatId);
 
     response.status(201).json({
