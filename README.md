@@ -99,6 +99,15 @@ ADMIN_CHAT_ID=sizning_admin_chat_id
 
 `WEB_APP_URL` deploy bo'lgandan keyin chiqadigan `https://...vercel.app` manzil bo'ladi. Uni keyin `.env` ichida va Vercel settings ichida yangilaysiz.
 
+## Payme integratsiyasi
+
+Payme uchun boshlang'ich helper va yo'riqnoma qo'shildi:
+
+- `lib/payme.js` - Payme checkout URL yaratish
+- `docs/payme-integration.md` - integratsiya rejasi
+
+To'liq Payme ulashdan oldin database qo'shish kerak. Payme transactionlarni doimiy saqlashni talab qiladi, Vercel'dagi vaqtinchalik fayl saqlash bunga mos emas.
+
 Masalan keyinroq:
 
 - VPS hosting
