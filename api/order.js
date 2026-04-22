@@ -39,9 +39,11 @@ module.exports = async (request, response) => {
       orderId: order.id
     });
   } catch (error) {
+    console.error("Order API xatoligi:", error.message);
     response.status(500).json({
       ok: false,
-      message: "Serverda xatolik yuz berdi."
+      message: "Serverda xatolik yuz berdi.",
+      error: process.env.NODE_ENV === "production" ? undefined : error.message
     });
   }
 };
